@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.activity_log import ActivityLog
 from app.models.notification import Notification
+from app.core.enums import ActivityAction
 
 
 class ActivityService:
@@ -18,7 +19,29 @@ class ActivityService:
         Whether the activity is user-facing and its recipients/messages must be explicitly provided
         by the caller to avoid brittle inference logic.
         """
-        log_entry = ActivityLog(event=event)
+        event_lower = event.lower()
+        if "allocated" in event_lower:
+            action_type = ActivityAction.ASSET_ALLOCATED
+        elif "transferred" in event_lower:
+            action_type = ActivityAction.ASSET_TRANSFERRED
+        elif "returned" in event_lower:
+            action_type = ActivityAction.ASSET_RETURNED
+        elif "created" in event_lower:
+            action_type = ActivityAction.BOOKING_CREATED
+        elif "cancelled" in event_lower or "cancel" in event_lower:
+            action_type = ActivityAction.BOOKING_CANCELLED
+        elif "requested" in event_lower:
+            action_type = ActivityAction.MAINTENANCE_REQUESTED
+        elif "completed" in event_lower or "resolve" in event_lower:
+            action_type = ActivityAction.MAINTENANCE_COMPLETED
+        else:
+            action_type = ActivityAction.SYSTEM
+
+        log_entry = ActivityLog(
+            action_type=action_type,
+            message=message or event,
+            user_id=recipient_id
+        )
         db.add(log_entry)
         db.commit()
         db.refresh(log_entry)

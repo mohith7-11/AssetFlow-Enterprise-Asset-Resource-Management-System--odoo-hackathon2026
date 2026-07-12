@@ -5,13 +5,7 @@ from app.core.enums import UserRole
 from app.models.user import User
 
 
-# Current User Dependency Skeleton
-# (This stub will be replaced by Member 1's actual JWT current-user retrieval)
-async def get_current_user() -> User:
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="JWT Authentication / get_current_user dependency not implemented yet by Member 1."
-    )
+from app.api.deps import get_current_user
 
 
 # Role-Based Access Control (RBAC) Checker Dependency
