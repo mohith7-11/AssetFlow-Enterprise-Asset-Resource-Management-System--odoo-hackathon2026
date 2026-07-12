@@ -9,6 +9,19 @@ AssetFlow is an Enterprise Asset & Resource Management System.
 - PostgreSQL
 - Docker Compose
 
+## Prototype Database Foundation
+
+This repository includes a shared PostgreSQL prototype foundation with one SQLAlchemy Base, one shared engine/session factory, and automatic table creation at backend startup. `Base.metadata.create_all()` creates missing tables but does not reliably alter existing tables.
+
+For incompatible prototype schema changes, developers may reset disposable local data with:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+Warning: `docker compose down -v` deletes all local PostgreSQL data.
+
 ## Prerequisites
 
 Developers need:
