@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 
 from app.db.init_db import init_db
 from app.db.session import check_database_connection
+from app.routers import assets as assets_router
 
 
 @asynccontextmanager
@@ -17,6 +18,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.include_router(assets_router.router)
 
 
 @app.get("/")
