@@ -32,3 +32,4 @@ class User(Base):
 
     department: Mapped["Department | None"] = relationship(back_populates="users")
     created_assets: Mapped[list["Asset"]] = relationship(back_populates="creator")
+    notifications: Mapped[list["Notification"]] = relationship(back_populates="recipient", cascade="all, delete-orphan")

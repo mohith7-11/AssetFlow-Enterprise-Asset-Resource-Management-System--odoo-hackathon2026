@@ -43,4 +43,8 @@ class Asset(Base):
     category: Mapped["AssetCategory"] = relationship(back_populates="assets")
     department: Mapped["Department | None"] = relationship(back_populates="assets")
     creator: Mapped["User | None"] = relationship(back_populates="created_assets")
-    history: Mapped[list["AssetHistory"]] = relationship(back_populates="asset")
+    history: Mapped[list["AssetHistory"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+    allocations: Mapped[list["Allocation"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+    bookings: Mapped[list["Booking"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+    maintenance_requests: Mapped[list["MaintenanceRequest"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+
