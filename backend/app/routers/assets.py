@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from psycopg.errors import ForeignKeyViolation
 from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
@@ -70,6 +71,10 @@ def create_asset(payload: AssetCreate, db: Session = Depends(get_db)) -> Asset:
             db.flush()
         except IntegrityError as exc:
             db.rollback()
+            if isinstance(exc.orig, ForeignKeyViolation):
+                raise HTTPException(
+                    status_code=422, detail="category_id or department_id does not exist"
+                ) from exc
             if "asset_tag" in str(exc.orig) and attempt < _MAX_TAG_ATTEMPTS - 1:
                 continue
             raise HTTPException(status_code=409, detail="Could not create asset due to a conflicting field") from exc
@@ -116,6 +121,10 @@ def update_asset(asset_id: int, payload: AssetUpdate, db: Session = Depends(get_
         db.commit()
     except IntegrityError as exc:
         db.rollback()
+        if isinstance(exc.orig, ForeignKeyViolation):
+            raise HTTPException(
+                status_code=422, detail="category_id or department_id does not exist"
+            ) from exc
         raise HTTPException(status_code=409, detail="Could not update asset due to a conflicting field") from exc
 
     db.refresh(asset, attribute_names=["category", "department", "creator"])
