@@ -6,6 +6,9 @@ from app.db.init_db import init_db
 from app.db.session import check_database_connection
 from app.routers import assets as assets_router
 
+from app.routes.dashboard import router as dashboard_router
+from app.routes.audit import router as audit_router
+from app.routes.activity import router as activity_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,6 +23,21 @@ app = FastAPI(
 )
 
 app.include_router(assets_router.router)
+app.include_router(
+    dashboard_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    audit_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    activity_router,
+    prefix="/api/v1",
+)
+
 
 
 @app.get("/")
