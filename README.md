@@ -31,35 +31,6 @@ Developers need:
 
 A local PostgreSQL installation and a local Python virtual environment are not required for the containerized development workflow.
 
-## Setup
-
-Clone the repository:
-
-```bash
-git clone <repository-url>
-cd assetflow
-```
-
-Create the environment file.
-
-macOS/Linux:
-
-```bash
-cp .env.example .env
-```
-
-Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Start all services:
-
-```bash
-docker compose up --build
-```
-
 ## Service URLs
 
 - Frontend: http://localhost:5173
