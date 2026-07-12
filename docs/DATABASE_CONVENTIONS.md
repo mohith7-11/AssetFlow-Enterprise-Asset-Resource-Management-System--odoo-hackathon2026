@@ -1,0 +1,12 @@
+- All models use `from app.db.base import Base`.
+- Routes use the shared `get_db`.
+- Never create feature-specific engines or Base classes.
+- Shared enums live in `app/core/enums.py`.
+- Every model must be imported in `app/models/__init__.py`.
+- Tables use plural `snake_case`.
+- Columns use `snake_case`.
+- Primary key is `id`.
+- Foreign keys use names such as `user_id`, `asset_id`, and `department_id`.
+- Prefer `created_at` and `updated_at`.
+- Major workflow logic belongs in feature/service logic, not model constructors.
+- For prototype-only incompatible schema changes, reset disposable local data with `docker compose down -v`.
