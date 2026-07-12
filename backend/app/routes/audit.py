@@ -9,6 +9,8 @@ from app.models.audit_cycle import AuditCycle
 from app.models.audit_assignment import AuditAssignment
 from app.models.audit_item import AuditItem
 from app.models.asset import Asset
+from app.services.activity_service import create_activity
+from app.core.enums import ActivityAction
 
 from app.core.enums import (
     AuditStatus,
@@ -54,6 +56,13 @@ def create_audit(
 
     audit = AuditCycle(
         **payload.model_dump()
+    )
+    
+    create_activity(
+        db,
+        ActivityAction.AUDIT_CREATED,
+        f"Audit cycle '{audit.name}' created",
+        audit.created_by,
     )
 
     db.add(audit)
@@ -152,6 +161,12 @@ def start_audit(
 
 
     audit.status=AuditStatus.ACTIVE
+    
+    create_activity(
+        db,
+        ActivityAction.AUDIT_STARTED,
+        f"Audit cycle '{audit.name}' started",
+    )
 
     db.commit()
 
@@ -299,7 +314,12 @@ def close_audit(
 
     audit.status=AuditStatus.CLOSED
     audit.closed_at=datetime.utcnow()
-
+    
+    create_activity(
+        db,
+        ActivityAction.AUDIT_COMPLETED,
+        f"Audit cycle '{audit.name}' closed",
+    )
 
     db.commit()
 
