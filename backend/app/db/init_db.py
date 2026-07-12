@@ -14,8 +14,24 @@ def init_db() -> None:
     Base.metadata.create_all(bind=engine)
 
     # 3. Custom Postgres Constraints Hook
-    # When Module B (assets/allocation) or Module C (booking) are implemented,
-    # owners should execute their custom raw SQL CREATE UNIQUE INDEX or EXCLUDE constraints here.
-    # Example:
-    # with engine.begin() as connection:
-    #     connection.execute(text("ALTER TABLE bookings ADD CONSTRAINT exclude_overlapping_bookings EXCLUDE USING gist (...);"))
+    with engine.begin() as connection:
+        # Create unique index to block duplicate active allocations (double-allocation)
+        connection.execute(text("""
+            CREATE UNIQUE INDEX IF NOT EXISTS one_active_allocation
+            ON allocations (asset_id) WHERE status = 'ACTIVE';
+        """))
+
+        # Create range-exclusion constraint to block overlapping bookings
+        # We query conname first to prevent duplicate alter table failures on subsequent startups
+        constraint_exists = connection.execute(text("""
+            SELECT 1 FROM pg_constraint WHERE conname = 'no_overlap';
+        """)).scalar()
+
+        if not constraint_exists:
+            connection.execute(text("""
+                ALTER TABLE bookings ADD CONSTRAINT no_overlap
+                EXCLUDE USING gist (
+                  asset_id WITH =,
+                  tstzrange(start_time, end_time, '[)') WITH &&
+                ) WHERE (status <> 'CANCELLED');
+            """))
