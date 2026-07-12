@@ -86,7 +86,8 @@ export default function Allocations({ currentUser }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isManager = currentUser.role === 'admin' || currentUser.role === 'asset_manager';
+  const roleLower = currentUser?.role?.toLowerCase();
+  const isManager = roleLower === 'admin' || roleLower === 'asset_manager';
 
   /* ── fetch real data (with fallback) ── */
   useEffect(() => {
@@ -236,7 +237,8 @@ export default function Allocations({ currentUser }) {
   const allocationHistory = lookedUpAsset ? (MOCK_HISTORY[lookedUpAsset.id] || []) : [];
 
   return (
-    <div className="grid-sidebar-main">
+    <div className="member3-theme">
+      <div className="grid-sidebar-main">
 
       {/* ── Left Panel: Asset Lookup + Forms ── */}
       <div>
@@ -495,5 +497,6 @@ export default function Allocations({ currentUser }) {
         )}
       </div>
     </div>
+  </div>
   );
 }

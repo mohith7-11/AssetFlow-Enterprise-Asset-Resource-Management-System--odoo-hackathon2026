@@ -55,7 +55,8 @@ export default function Maintenance({ currentUser }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isManager = currentUser.role === 'admin' || currentUser.role === 'asset_manager';
+  const roleLower = currentUser?.role?.toLowerCase();
+  const isManager = roleLower === 'admin' || roleLower === 'asset_manager';
 
   useEffect(() => {
     (async () => {
@@ -177,7 +178,7 @@ export default function Maintenance({ currentUser }) {
   const fmtDate = iso => iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—';
 
   return (
-    <div>
+    <div className="member3-theme">
       {error   && <div className="alert alert-danger"><span className="alert-icon">⚠</span>{error}</div>}
       {success && <div className="alert alert-success"><span className="alert-icon">✓</span>{success}</div>}
 

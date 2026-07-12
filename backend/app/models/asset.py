@@ -47,3 +47,4 @@ class Asset(Base):
     allocations: Mapped[list["Allocation"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
     bookings: Mapped[list["Booking"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
     maintenance_requests: Mapped[list["MaintenanceRequest"]] = relationship(back_populates="asset", cascade="all, delete-orphan")
+

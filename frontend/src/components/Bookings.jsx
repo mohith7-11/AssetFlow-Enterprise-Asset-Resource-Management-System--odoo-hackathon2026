@@ -202,7 +202,8 @@ export default function Bookings({ currentUser }) {
   };
 
   return (
-    <div className="grid-sidebar-main">
+    <div className="member3-theme">
+      <div className="grid-sidebar-main">
 
       {/* ── Left: Resource + Date selector + Book form ── */}
       <div>
@@ -310,7 +311,7 @@ export default function Bookings({ currentUser }) {
                       />
                     ) : items.map((item, idx) => {
                       if (item.type === 'booked') {
-                        const canManage = item.booking.booked_by === currentUser.id || currentUser.role === 'admin';
+                        const canManage = item.booking.booked_by === currentUser.id || currentUser.role?.toLowerCase() === 'admin';
                         return (
                           <div key={idx} className="slot-booked">
                             {item.label}
@@ -353,5 +354,6 @@ export default function Bookings({ currentUser }) {
         </div>
       </div>
     </div>
+  </div>
   );
 }
